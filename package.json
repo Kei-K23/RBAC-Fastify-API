@@ -27,7 +27,8 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "dev": "tsx watch src/main.ts"
+    "dev": "tsx watch src/main.ts",
+    "migrate": "drizzle-kit generate:pg"
   },
   "keywords": [],
   "author": "Kei-K23",
