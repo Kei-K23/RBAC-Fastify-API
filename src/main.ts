@@ -1,8 +1,10 @@
 import config from "config";
 import * as dotenv from "dotenv";
 import { createServer } from "./utils/server";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
+import { db } from "./db";
 dotenv.config();
-const POST = config.get<number>("POST");
+const PORT = config.get<number>("PORT");
 const HOST = config.get<string>("HOST");
 
 async function gracefulShutdown({
@@ -16,14 +18,19 @@ async function gracefulShutdown({
 async function main() {
   const app = await createServer();
 
-  app.listen({ port: POST, host: HOST }, async function (err) {
+  app.listen({ port: PORT, host: HOST }, async function (err) {
     if (err) {
       app.log.error(err);
       await app.close();
-      process.kill;
+      process.exit(1);
     }
   });
 
+  await migrate(db, {
+    migrationsFolder: "./migrations",
+  });
+
+  // stop the app
   const signals = ["SIGINT", "SIGTERM"];
 
   for (const signal of signals) {
