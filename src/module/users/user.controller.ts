@@ -98,3 +98,13 @@ export async function loginHandler(
     return res.status(500).send({ error: e.message });
   }
 }
+
+export async function assignRoleToUserHandler(
+  req: FastifyRequest,
+  res: FastifyReply
+) {
+  try {
+  } catch (e: any) {
+    return res.status(500).send({ error: e.message });
+  }
+}
