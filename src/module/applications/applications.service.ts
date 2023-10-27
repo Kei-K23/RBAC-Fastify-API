@@ -11,11 +11,11 @@ export async function createApplication(
       .values(payload)
       .returning();
 
-    if (application.length < 0) throw new Error("could not create application");
+    if (!application.length) throw new Error("could not create application");
 
     return application[0];
   } catch (e: any) {
-    throw new Error(e);
+    throw new Error(e.message);
   }
 }
 
@@ -28,10 +28,10 @@ export async function getApplications() {
         createdAt: applications.createdAt,
       })
       .from(applications);
-    if (results.length < 0) throw new Error("could not create application");
+    if (!results.length) throw new Error("could not create application");
 
     return results;
   } catch (e: any) {
-    throw new Error(e);
+    throw new Error(e.message);
   }
 }
