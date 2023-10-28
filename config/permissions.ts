@@ -3,6 +3,9 @@ export const ALL_PERMISSIONS = [
   "users:roles:write", // allow to add a role to a user
   "users:roles:delete", // allow to delete a role to a user
 
+  //roles
+  "role:write",
+
   //posts
   "posts:write",
   "posts:read",

@@ -5,11 +5,16 @@ import {
   getUserByApplicationId,
   getUserByEmail,
 } from "./users.service";
-import { CreateUserInput, UserLoginInput } from "./user.schema";
+import {
+  AssignRoleToUserInput,
+  CreateUserInput,
+  UserLoginInput,
+} from "./user.schema";
 import { SYSTEM_ROLE } from "../../../config/permissions";
 import { getRoleByName } from "../roles/roles.service";
 import jwt from "jsonwebtoken";
 import config from "config";
+import argon2 from "argon2";
 
 const SECRET = config.get<string>("SECRET");
 
@@ -80,8 +85,13 @@ export async function loginHandler(
     const { applicationsId, email, password } = req.body;
 
     const user = await getUserByEmail({ email, applicationId: applicationsId });
-    if (!user)
-      return res.status(401).send({ error: "invalid email or password" });
+
+    if (!user) return res.status(401).send({ error: "invalid email " });
+
+    const candidateHashPassword = await argon2.hash(password);
+
+    if (candidateHashPassword !== user.password)
+      return res.status(403).send({ error: "invalid password" });
 
     const token = jwt.sign(
       {
@@ -100,10 +110,24 @@ export async function loginHandler(
 }
 
 export async function assignRoleToUserHandler(
-  req: FastifyRequest,
+  req: FastifyRequest<{
+    Body: AssignRoleToUserInput;
+  }>,
   res: FastifyReply
 ) {
   try {
+    const { applicationId, roleId, userId } = req.body;
+    const role = await assignRoleToUser({
+      applicationId,
+      roleId,
+      userId,
+    });
+
+    if (!role)
+      return res
+        .status(400)
+        .send({ error: "could not assign role to the user" });
+    return role;
   } catch (e: any) {
     return res.status(500).send({ error: e.message });
   }

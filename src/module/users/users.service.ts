@@ -74,6 +74,7 @@ export async function getUserByEmail({
         applicationId: users.applicationsId,
         roleId: roles.id,
         permissions: roles.permissons,
+        password: users.password,
       })
       .from(users)
       .where(

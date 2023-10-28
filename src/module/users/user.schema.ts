@@ -47,6 +47,18 @@ const userLoginSechema = z.object({
   }),
 });
 
+const assignRoleToUserSchema = z.object({
+  userId: z
+    .string({ required_error: "user id is required" })
+    .uuid("invalid uuid"),
+  applicationId: z
+    .string({ required_error: "application id is required" })
+    .uuid("invalid uuid"),
+  roleId: z
+    .string({ required_error: "role id is required" })
+    .uuid("invalid uuid"),
+});
+
 export type CreateUserInput = Omit<
   z.infer<typeof createUserSchema>,
   "confirm_password"
@@ -54,10 +66,16 @@ export type CreateUserInput = Omit<
 
 export type UserLoginInput = z.infer<typeof userLoginSechema>;
 
+export type AssignRoleToUserInput = z.infer<typeof assignRoleToUserSchema>;
+
 export const createUserJsonSchema = {
   body: zodToJsonSchema(createUserSchema, "createUserSchema"),
 };
 
 export const userloginJsonSchema = {
   body: zodToJsonSchema(userLoginSechema, "userLoginSechema"),
+};
+
+export const assignRoleToUserJsonSchema = {
+  body: zodToJsonSchema(assignRoleToUserSchema, "assignRoleToUserSchema"),
 };
